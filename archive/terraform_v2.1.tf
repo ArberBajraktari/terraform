@@ -8,6 +8,8 @@ terraform {
 }
 
 # Configure the AWS Provider
+# Here we input the access_key, secret_key and token from the AWS account
+# This makes it possible for terraform to connect to AWS.
 provider "aws" {
     region = "us-east-1"
     access_key = "ASIASG7K3CRI6QY546BQ"
@@ -16,7 +18,8 @@ provider "aws" {
     token = "FwoGZXIvYXdzEI7//////////wEaDNIOIoQHz5d3EwKqcCLBAUFme63pBdQeKml5uhz49VOBU4WYVaTI6ChikwqCkza92Cm9hNudMy3Q2xERy91+FvyTzJleaHMxFsdQnuF4KcVj7kG8fjsoEoTg5bjMc21GbuPZGBkbUgK+8RF4pV9ksVD+OJq4hzwH9V0YGFJogOT9i4q+eLev+P4gS8FrYJXlWe7SWK97loew4C5710eiB/1PXcMuyTLS+LGfKq4xDVBO9U6KmhgUTXE8LWwHR0wB1RimkoHkFj8Iw2Ok+oq7m3Uog62knAYyLYMF5HEfucRHayX3SxvQyhG5CNMnQKTqTqJsjSlIaw07GYkEEsd9V5yBnsfZLQ=="
 }
 
-#Created my own VPC
+# Created my own VPC
+# In this case we used the VPC created by us in our AWS account
 resource "aws_vpc" "main" {
   cidr_block       = "192.168.0.0/23"
 

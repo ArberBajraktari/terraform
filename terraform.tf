@@ -8,6 +8,8 @@ terraform {
 }
 
 # Configure the AWS Provider
+# Here we input the access_key, secret_key and token from the AWS account
+# This makes it possible for terraform to connect to AWS.
 provider "aws" {
     region = "us-east-1"
     access_key = "ASIASG7K3CRI6QY546BQ"
@@ -16,7 +18,9 @@ provider "aws" {
     token = "FwoGZXIvYXdzEI7//////////wEaDNIOIoQHz5d3EwKqcCLBAUFme63pBdQeKml5uhz49VOBU4WYVaTI6ChikwqCkza92Cm9hNudMy3Q2xERy91+FvyTzJleaHMxFsdQnuF4KcVj7kG8fjsoEoTg5bjMc21GbuPZGBkbUgK+8RF4pV9ksVD+OJq4hzwH9V0YGFJogOT9i4q+eLev+P4gS8FrYJXlWe7SWK97loew4C5710eiB/1PXcMuyTLS+LGfKq4xDVBO9U6KmhgUTXE8LWwHR0wB1RimkoHkFj8Iw2Ok+oq7m3Uog62knAYyLYMF5HEfucRHayX3SxvQyhG5CNMnQKTqTqJsjSlIaw07GYkEEsd9V5yBnsfZLQ=="
 }
 
-#Created my own VPC
+
+# Created my own VPC
+# In this case we used the VPC created by us in our AWS account
 resource "aws_vpc" "main" {
   cidr_block       = "192.168.0.0/23"
 
@@ -26,6 +30,7 @@ resource "aws_vpc" "main" {
 }
 
 #Created an Internet Gateway
+# This is needed so that the VPC and subnets have a connection with the outside world
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
@@ -34,7 +39,9 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-#Created a custom Route Table
+# Created a custom Route Table
+# This route table basically tells to the devices of the VPC that the route they
+# ought to follow is 0.0.0.0/0 (so all)
 resource "aws_route_table" "route_table" {
   vpc_id = aws_vpc.main.id
 
@@ -49,7 +56,9 @@ resource "aws_route_table" "route_table" {
 }
 
 
-#Created a subnet
+# Created a subnet
+# Here we create a subnet for the VPC we are using above
+# That's why it is connected with the id of the VPC and the mask is smaller
 resource "aws_subnet" "subnet_1" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "192.168.0.0/24"
@@ -59,14 +68,21 @@ resource "aws_subnet" "subnet_1" {
   }
 }
 
-#Associated subnet with Route Table
+# Associated subnet with Route Table
+# Next step would be to associate subnet with the route table (0.0.0.0/0)
+# We wrote it for VPC but now we have to specify it for the subnets inside the VPC
+# as well
 resource "aws_route_table_association" "rt_associate" {
   subnet_id      = aws_subnet.subnet_1.id
   route_table_id = aws_route_table.route_table.id
 }
 
 
-#Create Security Group
+# Create Security Group
+# Here are the security groups
+# Here we define what can income in our instance and what can outgo
+# In this case, we allow connection from outside with HTTP and HTTPS
+# It also allows everything to go outside
 resource "aws_security_group" "security_group" {
   name        = "allow_https/s"
   description = "Allow HTTP/s"
@@ -106,7 +122,10 @@ resource "aws_security_group" "security_group" {
   }
 }
 
-#Created a Network Interface with an IP in the subnet (the first IP address)
+# Created a Network Interface with an IP in the subnet (the first IP address)
+# This helps facilitate network connectivity for instances
+# If we had multiple subnets here, we could have used this to 
+# communicate on 2 separate subnets
 resource "aws_network_interface" "nw_interface" {
   subnet_id       = aws_subnet.subnet_1.id
   security_groups = [aws_security_group.security_group.id]
@@ -114,14 +133,19 @@ resource "aws_network_interface" "nw_interface" {
 
 }
 
-#Assigned an Elastic IP for the Instance
+# Assigned an Elastic IP for the Instance
+# As seen below, since we have 4 instances of our webservice, we need to allocate
+# 4 elastiic IPs for the respective instances as well
+# This helps us bcs since it is a reserved public IP Add., then we can use one from
+# the desired region
 resource "aws_eip" "lb" {
   instance   = element(aws_instance.web.*.id, count.index)
   count = 4
   vpc      = true
 }
 
-#Defining AMI for the Instance that will be run
+# Here we found the ami that we wanna use for the instances EC2 that we want to create
+# In this case its ubuntu
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -138,7 +162,10 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-#Starting EC2 instance with the website running
+# Here we create the Instance (webserver in this case)
+# It takes the ami from above, the instance type (freetier in this case) and assigns the 
+# security groups (so what is allows and what is not)
+# We crate 4 instances here
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
@@ -156,6 +183,7 @@ resource "aws_instance" "web" {
   # Creates four identical aws ec2 instances
   count = 4  
 
+  # Here is the connection of each instance with the network interface
   network_interface {
     device_index            = 0
     network_interface_id    = aws_network_interface.nw_interface[count.index].id

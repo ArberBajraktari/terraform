@@ -8,6 +8,8 @@ terraform {
 }
 
 # Configure the AWS Provider
+# Here we input the access_key, secret_key and token from the AWS account
+# This makes it possible for terraform to connect to AWS.
 provider "aws" {
     region = "us-east-1"
     access_key = "ASIA23SCJ7D3APVSLW6T"
@@ -17,18 +19,25 @@ provider "aws" {
 }
 
 #Use the default VPC
+# In this case we used the default VPC that already exists in our AWS account
+# We can also create and use other VPC, already created or that we can create here
 resource "aws_default_vpc" "default" {
   tags = {
     Name = "Default VPC"
   }
 }
 
-#Create Security Group
+# Create Security Group
+# Here are the security groups
+# Here we define what can income in our instance and what can outgo
+# In this case, we allow connection from outside with HTTP and HTTPS
+# It also allows everything to go outside
 resource "aws_security_group" "security_group" {
   name        = "allow_https/s"
   description = "Allow HTTP/s"
   vpc_id      = "${aws_default_vpc.default.id}"
 
+  # Incoming HTTPS
   ingress {
     description      = "HTTPS from VPC"
     from_port        = 443
@@ -38,6 +47,7 @@ resource "aws_security_group" "security_group" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  # Incoming HTTPS
   ingress {
     description      = "HTTP from VPC"
     from_port        = 80
@@ -47,6 +57,7 @@ resource "aws_security_group" "security_group" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  # outgoing all
   egress {
     from_port        = 0
     to_port          = 0
@@ -60,11 +71,9 @@ resource "aws_security_group" "security_group" {
   }
 }
 
-###############
-#   Instance needs terms to be accepted...
-#   Search for diff ami
-#   If doesn't work, ask teacher
-###############
+
+# Here we found the ami that we wanna use for the instances EC2 that we want to create
+# In this case its ubuntu
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -81,11 +90,16 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# Here we create the Instance (webserver in this case)
+# It takes the ami from above, the instance type (freetier in this case) and assigns the 
+# security groups (so what is allows and what is not)
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   vpc_security_group_ids = [aws_security_group.security_group.id]
 
+
+  # This is the user data, basically the command that will be run after the instance is started
   user_data = <<-EOF
     #!/bin/bash
     sudo apt-get update -y
@@ -99,6 +113,8 @@ resource "aws_instance" "web" {
     Name = "HelloWorld"
   }
 }
+
+# Here we just output the public dns name of the instance above
 output "instance_dns" {
   value = aws_instance.web.public_dns
 }
