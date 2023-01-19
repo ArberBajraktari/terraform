@@ -12,10 +12,10 @@ terraform {
 # This makes it possible for terraform to connect to AWS.
 provider "aws" {
     region = "us-east-1"
-    access_key = "ASIASG7K3CRI6QY546BQ"
-    secret_key = "n1dKfQX8zNxZPSb3hz5zKkhFyHHbuTIdCmOcp+0Z"
+    access_key = "ASIAVBO7E476HB24GKFQ"
+    secret_key = "//YxsK+VCFlq/GG8vfZcdi5vJ3TnZwVOYMmCR8n8"
     #session_
-    token = "FwoGZXIvYXdzEI7//////////wEaDNIOIoQHz5d3EwKqcCLBAUFme63pBdQeKml5uhz49VOBU4WYVaTI6ChikwqCkza92Cm9hNudMy3Q2xERy91+FvyTzJleaHMxFsdQnuF4KcVj7kG8fjsoEoTg5bjMc21GbuPZGBkbUgK+8RF4pV9ksVD+OJq4hzwH9V0YGFJogOT9i4q+eLev+P4gS8FrYJXlWe7SWK97loew4C5710eiB/1PXcMuyTLS+LGfKq4xDVBO9U6KmhgUTXE8LWwHR0wB1RimkoHkFj8Iw2Ok+oq7m3Uog62knAYyLYMF5HEfucRHayX3SxvQyhG5CNMnQKTqTqJsjSlIaw07GYkEEsd9V5yBnsfZLQ=="
+    token = "FwoGZXIvYXdzECQaDEMPF04yENAfwwgLjSLBAegVhYy3L6nIku9eXZUCuaHdMdWsolP+NAKPj7G/0klF5156L6WRFZRIJw5uMTc9G/T36pUuMtuMTZRd0eBcnvfBy7vdk5Nf2bQiLaTPsgDD4Aut0/d7uWUyAgHqydvM6rPQKOSrhgNDk6cYMQG6dFz7lq8Xt1ICDBP3cBHCuD9yed767dKVBBTFrlMCHYlmBLKMP+ahes5GXVE0bXKRXX5Ira33dzjWcy1JdmA4XlSCI/jkJXaT/5UMeDcuyp/L8fsoraamngYyLejsSi8UJBUjjwh1T5Tyo/Px0jLKAsHxafeIu9qmZP4Atg85Hp1gPY++o7qUEw=="
 }
 
 
@@ -124,7 +124,7 @@ resource "aws_security_group" "security_group" {
 
 # Created a Network Interface with an IP in the subnet (the first IP address)
 # This helps facilitate network connectivity for instances
-# If we had multiple subnets here, we could have used this to 
+# If we had multiple subnets here, we could have used this to
 # communicate on 2 separate subnets
 resource "aws_network_interface" "nw_interface" {
   subnet_id       = aws_subnet.subnet_1.id
@@ -163,7 +163,7 @@ data "aws_ami" "ubuntu" {
 }
 
 # Here we create the Instance (webserver in this case)
-# It takes the ami from above, the instance type (freetier in this case) and assigns the 
+# It takes the ami from above, the instance type (freetier in this case) and assigns the
 # security groups (so what is allows and what is not)
 # We crate 4 instances here
 resource "aws_instance" "web" {
@@ -181,7 +181,7 @@ resource "aws_instance" "web" {
 
 
   # Creates four identical aws ec2 instances
-  count = 4  
+  count = 4
 
   # Here is the connection of each instance with the network interface
   network_interface {
