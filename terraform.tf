@@ -12,10 +12,10 @@ terraform {
 # This makes it possible for terraform to connect to AWS.
 provider "aws" {
     region = "us-east-1"
-    access_key = "ASIAVBO7E476HB24GKFQ"
-    secret_key = "//YxsK+VCFlq/GG8vfZcdi5vJ3TnZwVOYMmCR8n8"
+    access_key = "ASIAVBO7E476O54MNMO4"
+    secret_key = "qMCdDCu5/JiGBXtQ0cgnGU29YU8Xuky3A42pAQas"
     #session_
-    token = "FwoGZXIvYXdzECQaDEMPF04yENAfwwgLjSLBAegVhYy3L6nIku9eXZUCuaHdMdWsolP+NAKPj7G/0klF5156L6WRFZRIJw5uMTc9G/T36pUuMtuMTZRd0eBcnvfBy7vdk5Nf2bQiLaTPsgDD4Aut0/d7uWUyAgHqydvM6rPQKOSrhgNDk6cYMQG6dFz7lq8Xt1ICDBP3cBHCuD9yed767dKVBBTFrlMCHYlmBLKMP+ahes5GXVE0bXKRXX5Ira33dzjWcy1JdmA4XlSCI/jkJXaT/5UMeDcuyp/L8fsoraamngYyLejsSi8UJBUjjwh1T5Tyo/Px0jLKAsHxafeIu9qmZP4Atg85Hp1gPY++o7qUEw=="
+    token = "FwoGZXIvYXdzEDIaDNx2smtDM75OYpUqcSLBARr+pe5uXxXJcG3Hqk0rxZZHIq8H71BHCydI3ydhuRFLMp2PsLMBQmikNnkHs2W78d3hjPSmS0nOVHfkdjJ1q0muzaHHKnOJioIecuMK4A7QIpI9XeYylhrhjuAZq+yxnjOitADz4+zDOHWzc0gv2nVwxm8HMxsIRiJ8Tcd/nOfMru3NQr092zkgJOcLEfr99J/GiwQnmpss40izZIIzPKOZd8ZY/2tS07+v5Pl8DK2dLXCBAH53bRjqWDd+BBgdnFcoi6mpngYyLW+KG01hdH7PGKflv47sIIudluliyLdlOsDVlA50aRq97PKPupTvnKxBdeBMrQ=="
 }
 
 
